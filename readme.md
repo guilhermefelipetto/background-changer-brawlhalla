@@ -40,3 +40,5 @@ pyinstaller --onefile -w main.py
 ```
 
 ### 6. Procure a pasta 'dist' no diretório 'background_changer_brawlhalla', nela contém o main.exe, o executável da sua aplicação
+![Captura de tela 2024-02-27 180849](https://github.com/guilhermefelipetto/background_changer_brawlhalla/assets/92332005/d865abb6-346c-4efc-8696-1bdd906db6ed)
+
