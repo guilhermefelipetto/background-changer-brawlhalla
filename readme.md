@@ -2,7 +2,7 @@
 
 Background Changer para o Brawlhalla é um app simples desenvolvido em Python para automatizar a alteração do background dos mapas.
 
-Nota: Você precisa ter o Python instalado e configurado na sua máquina!
+Nota: Você precisa ter o Python 3.11.8 ou superior instalado e configurado na sua máquina!
 
 ## Configuração do Ambiente de Desenvolvimento
 
