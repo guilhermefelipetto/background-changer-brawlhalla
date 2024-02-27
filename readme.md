@@ -17,7 +17,9 @@ git clone https://github.com/guilhermefelipetto/background_changer_brawlhalla
 cd background_changer_brawlhalla
 ```
 
-### 2. Dentro do repositório, abra o terminal para criar um ambiente virtual
+### 2. Criando o ambiente virtual
+
+Dentro do repositório, abra o terminal para criar um ambiente virtual
 
 ```bash
 python -m venv .venv
