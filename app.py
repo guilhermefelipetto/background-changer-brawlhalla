@@ -74,8 +74,10 @@ class App:
     
     def atualizar_interface_apos_selecao(self):
         self.btn_selecionar_diretorio['state'] = 'disabled'
-        self.text_caminho.delete('1.0', tk.END)
+        self.text_caminho['state'] = 'normal'  # Temporariamente reabilita a edição para atualizar o texto
+        self.text_caminho.delete('1.0', tk.END)  # Limpa o texto existente
         self.text_caminho.insert('1.0', f'> {self.diretorio_brawlhalla}')
+        self.text_caminho['state'] = 'disabled'  # Desabilita a edição para prevenir modificações pelo usuário
         self.selecao_btn['state'] = 'normal'
         
     def tutorial(self):
