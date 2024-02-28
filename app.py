@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 import webbrowser
 import shutil
+import string
 from tkinter import filedialog, messagebox
 from image_utils import verificar_tamanho, substituir_imagens, redimensionar_imagem
 
@@ -22,7 +23,7 @@ class App:
 
     def setup_ui(self):
         # Botao para selecionar o diretorio do jogo
-        self.btn_selecionar_diretorio = tk.Button(self.root, text="Selecionar Diretório do Jogo", command=self.selecionar_diretorio, width=25, height=1)
+        self.btn_selecionar_diretorio = tk.Button(self.root, text="Buscar diretório do jogo", command=self.buscar_diretorio_jogo, width=25, height=1)
         self.btn_selecionar_diretorio.pack(pady=10)
 
         # Botao para selecionar a imagem
@@ -52,18 +53,38 @@ class App:
         self.text_caminho.config(xscrollcommand=self.scrollbar_horizontal.set)
         self.text_caminho.pack(fill='x')
         self.scrollbar_horizontal.pack(fill='x')
+    
+    def buscar_diretorio_jogo(self):
+        letras_unidade = (letra for letra in string.ascii_uppercase if letra >= 'C')
+
+        possiveis_caminhos = [
+            'Program Files (x86)\\Steam\\steamapps\\common\\Brawlhalla\\mapArt\\Backgrounds',
+            'SteamLibrary\\steamapps\\common\\Brawlhalla\\mapArt\\Backgrounds'
+        ]
+
+        for letra_unidade in letras_unidade:
+            for caminho in possiveis_caminhos:
+                caminho_completo = f'{letra_unidade}:\\{caminho}'
+                if os.path.exists(caminho_completo):
+                    self.diretorio_brawlhalla = caminho_completo
+                    self.atualizar_interface_apos_selecao()
+                    return
+        
+        messagebox.showerror('Erro', 'Não foi possível encontrar a pasta Backgrounds do Brawlhalla nas localizações padrão.')
+    
+    def atualizar_interface_apos_selecao(self):
+        self.btn_selecionar_diretorio['state'] = 'disabled'
+        self.text_caminho.delete('1.0', tk.END)
+        self.text_caminho.insert('1.0', f'> {self.diretorio_brawlhalla}')
+        self.selecao_btn['state'] = 'normal'
         
     def tutorial(self):
         url_video = 'https://youtu.be/hdXtK3JhFes'
         webbrowser.open(url_video)
-    
-    def selecionar_diretorio(self):
-        diretorio = filedialog.askdirectory(title='Selecione o diretório do Brawlhalla')
-        if diretorio:
-            self.diretorio_brawlhalla = os.path.join(diretorio, 'mapArt', 'Backgrounds')
-            self.text_caminho.delete('1.0', tk.END)  # Limpa o texto existente
-            self.text_caminho.insert('1.0', f"> {self.diretorio_brawlhalla}")
-            self.selecao_btn['state'] = tk.NORMAL  # Habilita o botão de selecionar imagem
+        
+        self.text_caminho.delete('1.0', tk.END)  # Limpa o texto existente
+        self.text_caminho.insert('1.0', f'> {self.diretorio_brawlhalla}')
+        self.selecao_btn['state'] = tk.NORMAL
 
     def escolher_imagem(self):
         # Verifica que o diretorio do jogo foi definido
