@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 import webbrowser
+import shutil
 from tkinter import filedialog, messagebox
 from image_utils import verificar_tamanho, substituir_imagens, redimensionar_imagem
 
@@ -89,29 +90,37 @@ class App:
                                             "Deseja continuar mesmo assim?")
                 if resposta:
                     self.imagem_selecionada = imagem_substituta
-                    self.btn_redimensionar['state'] = 'normal'
                     self.btn_substituir['state'] = 'normal'
                     break  # Sai do loop apos a substituição bem-sucedida
                 # Se o usuario clicar em "Nao", o loop continua, pedindo uma nova seleção de imagem
         
     def comando_substituir_imagens_com_opcao(self):
-        if self.opcao_redimensionar.get():
-            if hasattr(self, 'imagem_selecionada') and self.imagem_selecionada:
-                try:
-                    redimensionar_imagem(self.imagem_selecionada)
-                    messagebox.showinfo('Sucesso', 'Imagens substituida com sucesso.')
-                except Exception as e:
-                    messagebox.showerror('Erro', f'Falha ao redimensionar imagem: {e}')
-                    return
-        
-        if hasattr(self, 'imagem_selecionada') and self.imagem_selecionada and self.diretorio_brawlhalla:
+        imagem_para_substituir = None
+
+        if self.opcao_redimensionar.get() and hasattr(self, 'imagem_selecionada') and self.imagem_selecionada:
+            # Caso o usuário escolha redimensionar a imagem
             try:
-                substituir_imagens(self.imagem_selecionada, self.diretorio_brawlhalla)
+                temp_image_path = redimensionar_imagem(self.imagem_selecionada)
+                imagem_para_substituir = temp_image_path
+            except Exception as e:
+                messagebox.showerror('Erro', f'Falha ao redimensionar imagem: {e}')
+                return
+        elif hasattr(self, 'imagem_selecionada') and self.imagem_selecionada:
+            # Caso o usuário escolha não redimensionar a imagem
+            imagem_para_substituir = self.imagem_selecionada
+
+        if imagem_para_substituir and self.diretorio_brawlhalla:
+            try:
+                substituir_imagens(imagem_para_substituir, self.diretorio_brawlhalla)
+                # Se a imagem foi redimensionada, limpa o diretório temporário
+                if self.opcao_redimensionar.get():
+                    shutil.rmtree(os.path.dirname(imagem_para_substituir))
                 messagebox.showinfo('Concluído', 'As imagens foram substituídas com sucesso.')
             except Exception as e:
                 messagebox.showerror('Erro', f'Falha ao substituir imagens: {e}')
         else:
-            messagebox.showerror('Erro', 'Operacao Inválida. Verifique se a imagem foi selecionada e o diretório do jogo definido.')
+            messagebox.showerror('Erro', 'Operação Inválida. Verifique se a imagem foi selecionada e o diretório do jogo definido.')
+
 
 
     def run(self):

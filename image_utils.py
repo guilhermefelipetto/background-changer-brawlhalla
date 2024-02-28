@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 import shutil
+import tempfile
 
 def verificar_tamanho(imagem_path):
     with Image.open(imagem_path) as img:
@@ -20,5 +21,8 @@ def substituir_imagens(imagem_substituta, diretorio):
 
 def redimensionar_imagem(imagem_path, largura=2048, altura=1151):
     with Image.open(imagem_path) as img:
+        temp_dir = tempfile.mkdtemp()
+        temp_image_path = os.path.join(temp_dir, os.path.basename(imagem_path))
         img_redimensionada = img.resize((largura, altura), Image.Resampling.LANCZOS)
-        img_redimensionada.save(imagem_path)
+        img_redimensionada.save(temp_image_path)
+        return temp_image_path
