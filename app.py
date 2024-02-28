@@ -81,7 +81,7 @@ class App:
         self.selecao_btn['state'] = 'normal'
         
     def tutorial(self):
-        url_video = 'https://youtu.be/hdXtK3JhFes'
+        url_video = 'https://youtu.be/nzBUVY051dA'
         webbrowser.open(url_video)
         
         self.text_caminho.delete('1.0', tk.END)  # Limpa o texto existente
