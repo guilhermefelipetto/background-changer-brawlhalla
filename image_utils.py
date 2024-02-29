@@ -26,3 +26,20 @@ def redimensionar_imagem(imagem_path, largura=2048, altura=1151):
         img_redimensionada = img.resize((largura, altura), Image.Resampling.LANCZOS)
         img_redimensionada.save(temp_image_path)
         return temp_image_path
+
+def restaurar_imagens_originais(dir_backgrounds, dir_backgrounds_originais):
+    if not os.path.isdir(dir_backgrounds):
+        raise FileNotFoundError("Pasta de backgrounds não encontrada.")
+    
+    # Exclui todas as imagens na pasta de backgrounds
+    for item in os.listdir(dir_backgrounds):
+        caminho_item = os.path.join(dir_backgrounds, item)
+        if os.path.isfile(caminho_item) and item.endswith(('.jpg', '.jpeg', '.png')):
+            os.remove(caminho_item)
+    
+    # Copia todas as imagens da nova pasta para a pasta de backgrounds
+    for item in os.listdir(dir_backgrounds_originais):
+        caminho_item_origem = os.path.join(dir_backgrounds_originais, item)
+        caminho_item_destino = os.path.join(dir_backgrounds, item)
+        if os.path.isfile(caminho_item_origem):
+            shutil.copy(caminho_item_origem, caminho_item_destino)

@@ -4,7 +4,7 @@ import webbrowser
 import shutil
 import string
 from tkinter import filedialog, messagebox
-from image_utils import verificar_tamanho, substituir_imagens, redimensionar_imagem
+from image_utils import verificar_tamanho, substituir_imagens, redimensionar_imagem, restaurar_imagens_originais
 
 class App:
     def __init__(self):
@@ -27,11 +27,11 @@ class App:
         self.btn_selecionar_diretorio.pack(pady=10)
 
         # Botao para selecionar a imagem
-        self.selecao_btn = tk.Button(self.root, text="Selecionar Imagem", command=self.escolher_imagem, width=25, height=1)
+        self.selecao_btn = tk.Button(self.root, text='Selecionar Imagem', command=self.escolher_imagem, width=25, height=1)
         self.selecao_btn.pack()
 
         # Botao para abrir o tutorial
-        self.btn_tutorial = tk.Button(self.root, text="Ver Tutorial", command=self.tutorial, width=25, height=1)
+        self.btn_tutorial = tk.Button(self.root, text='Ver Tutorial', command=self.tutorial, width=25, height=1)
         self.btn_tutorial.pack(pady=10)
 
         # Botao para redimensionar a imagem selecionada
@@ -40,12 +40,13 @@ class App:
         self.checkbox_redimensionar.pack()
 
         # Botao para substituir as imagens
-        self.btn_substituir = tk.Button(self.root, text="Substituir Imagens", command=self.comando_substituir_imagens_com_opcao, width=25, height=1)
+        self.btn_substituir = tk.Button(self.root, text='Substituir Imagens', command=self.comando_substituir_imagens_com_opcao, width=25, height=1)
         self.btn_substituir.pack(pady=10)
 
         # Label de texto
-        self.label_teste = tk.Label(self.root, text="Diretorio do jogo:")
+        self.label_teste = tk.Label(self.root, text='Diretorio do jogo:')
         self.label_teste.pack()
+
 
         # Text widget para exibir o caminho do diretório selecionado
         self.text_caminho = tk.Text(self.root, height=1, wrap='none')  # wrap='none' para desabilitar quebra de linha automática
@@ -54,6 +55,10 @@ class App:
         self.text_caminho.pack(fill='x')
         self.scrollbar_horizontal.pack(fill='x')
     
+        # Botao para restaurar imagens originais
+        self.btn_restaurar_img = tk.Button(self.root, text='Restaurar Imagens Originais', command=self.restaurar_imagens_originais, width=25, height=1)
+        self.btn_restaurar_img.pack(pady=10)
+
     def buscar_diretorio_jogo(self):
         letras_unidade = (letra for letra in string.ascii_uppercase if letra >= 'C')
 
@@ -106,6 +111,7 @@ class App:
             if verificar_tamanho(imagem_substituta):
                 self.imagem_selecionada = imagem_substituta
                 self.btn_substituir['state'] = 'normal'
+                messagebox.showinfo('Imagem Selecionada', 'A imagem foi carregada com sucesso.')
                 break  # Sai do loop após a substituicao bem-sucedida
             else:
                 resposta = messagebox.askyesno("Tamanho da imagem incorreto",
@@ -114,6 +120,7 @@ class App:
                 if resposta:
                     self.imagem_selecionada = imagem_substituta
                     self.btn_substituir['state'] = 'normal'
+                    messagebox.showinfo('Imagem Selecionada', 'A imagem foi carregada com sucesso.')
                     break  # Sai do loop apos a substituição bem-sucedida
                 # Se o usuario clicar em "Nao", o loop continua, pedindo uma nova seleção de imagem
         
@@ -143,8 +150,18 @@ class App:
                 messagebox.showerror('Erro', f'Falha ao substituir imagens: {e}')
         else:
             messagebox.showerror('Erro', 'Operação Inválida. Verifique se a imagem foi selecionada e o diretório do jogo definido.')
+    
+    def restaurar_imagens_originais(self):
+        if not self.diretorio_brawlhalla:
+            messagebox.showwarning('Aviso', 'Por favor, busque o diretório do jogo antes de restaurar os backgrounds.')
+            return
 
-
+        try:
+            dir_backgrounds_originais = 'original_backgrounds'
+            restaurar_imagens_originais(self.diretorio_brawlhalla, dir_backgrounds_originais)
+            messagebox.showinfo('Concluído', 'Imagens restauradas com sucesso.')
+        except Exception as e:
+            messagebox.showerror('Erro', str(e))
 
     def run(self):
         self.root.mainloop()
